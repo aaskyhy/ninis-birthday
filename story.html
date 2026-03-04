@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tale of Anis</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:18px;
+      background: #fef3f6;
+    }
+
+    .wrap{
+      width:min(980px, 96vw);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:12px;
+    }
+
+    .title{
+      margin:0;
+      font-size:20px;
+      font-weight:800;
+      letter-spacing:0.2px;
+      color:#1a1a1a;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px dashed rgba(216,100,170,0.55);
+      background: rgba(255, 225, 239, 0.7);
+      color:#7a1453;
+      font-size:13px;
+    }
+
+    .btn-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    button{
+      border:1px solid #c23f87;
+      background:#ffffff;
+      color:#ee387b;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    button.ghost{
+      background:#fff;
+      color:#111;
+      border-color:#ddd;
+    }
+    button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+
+    /* Book card */
+    .book{
+      position:relative;
+      background: linear-gradient(180deg, #ffffff 0%, #fff7fb 100%);
+      border: 1px solid rgba(216,100,170,0.30);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      overflow:hidden;
+    }
+
+    /* Cute blobs */
+    .blob{
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background: rgba(255, 182, 224, 0.35);
+      filter: blur(1px);
+      z-index:0;
+    }
+    .blob.a{ top:-140px; left:-140px; }
+    .blob.b{ bottom:-160px; right:-160px; background: rgba(216, 100, 170, 0.18); }
+
+    .content{
+      position:relative;
+      z-index:1;
+      display:grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap:14px;
+      align-items:stretch;
+    }
+
+    @media (max-width: 860px){
+      .content{ grid-template-columns: 1fr; }
+    }
+
+    /* Left page (image) */
+    .page-left{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.page-left img{
+  width:85%;       /* image smaller */
+  height:auto;
+  max-height:85%;
+  object-fit:contain;
+  display:block;
+}
+
+    /* Polaroid label */
+    .stamp{
+      position:absolute;
+      left:12px;
+      bottom:12px;
+      padding:8px 10px;
+      border-radius:14px;
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(0,0,0,0.08);
+      font-size:13px;
+      color:#333;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+      max-width: calc(100% - 24px);
+    }
+
+    /* Right page (story) */
+    .page-right{
+      border-radius:16px;
+      border:1px solid rgba(0,0,0,0.08);
+      background:#fff;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:340px;
+    }
+
+    .chapter{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .chapter h3{
+      margin:0;
+      font-size:18px;
+      font-weight:850;
+      letter-spacing:0.2px;
+    }
+
+    .meta{
+      font-size:12px;
+      color:#666;
+      margin-top:2px;
+    }
+
+    .tag{
+      flex:0 0 auto;
+      font-size:12px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(216,100,170,0.35);
+      background: rgba(255, 225, 239, 0.55);
+      color:#7a1453;
+      height:fit-content;
+      white-space:nowrap;
+    }
+
+    .story{
+      border:1px dashed rgba(216,100,170,0.5);
+      background: rgba(255, 239, 248, 0.6);
+      border-radius:14px;
+      padding:12px;
+      line-height:1.75;
+      color:#2a2a2a;
+      min-height:180px;
+    }
+
+    .story p{ margin: 0 0 10px; }
+    .story p:last-child{ margin-bottom:0; }
+
+    .prompt{
+      font-size:13px;
+      color:#555;
+      margin:0;
+    }
+
+    /* bottom nav */
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-top:12px;
+      flex-wrap:wrap;
+    }
+
+    .progress{
+      flex:1 1 320px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width:240px;
+    }
+
+    .bar{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,0.08);
+      background:#fff;
+      overflow:hidden;
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(216,100,170,0.7), rgba(194,16,129,0.75));
+      border-radius:999px;
+    }
+
+    .dots{
+      display:flex;
+      gap:6px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:center;
+      padding:6px 0;
+    }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,0.18);
+      background:#fff;
+      opacity:.55;
+      cursor:pointer;
+    }
+    .dot.active{
+      opacity:1;
+      background: rgba(216,100,170,0.65);
+      border-color: rgba(216,100,170,0.55);
+      transform: scale(1.05);
+    }
+
+    /* subtle page flip animation */
+    .flip{
+      animation: flip .25s ease;
+    }
+    @keyframes flip{
+      from { transform: rotateY(6deg); opacity:.85; }
+      to   { transform: rotateY(0deg); opacity:1; }
+    }
+
+    .kbdhint{
+      font-size:12px;
+      color:#666;
+    }
+    kbd{
+      border:1px solid #ddd;
+      border-bottom-width:2px;
+      padding:2px 8px;
+      border-radius:8px;
+      background:#fafafa;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size:12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div>
+        <h1 class="title">Tale of Anis The di-NEESAURS<span aria-hidden="true">📖🦖</span></h1>
+        <div class="pill" id="pagePill">Page 1 / 8</div>
+      </div>
+
+      <div class="btn-row">
+        <!-- Change these filenames if yours are different -->
+        <button onclick="window.location.href='index.html#game'">Back to menu</button>
+      </div>
+    </div>
+
+    <div class="book" id="book">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+
+      <div class="content" id="pageWrap">
+        <!-- LEFT -->
+        <div class="page-left" id="imgWrap">
+          <img id="pageImg" alt="Story background" src="" />
+          <div class="stamp" id="imgStamp">✨</div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="page-right">
+          <div class="chapter">
+            <div>
+              <h3 id="pageTitle">An Amazing Girl Was Born</h3>
+              <div class="meta" id="pageMeta">Outside Dino Hospital</div>
+            </div>
+            <div class="tag" id="pageTag">baby era</div>
+          </div>
+
+          <p class="prompt" id="pagePrompt">Narration idea: keep it short + sweet + funny.</p>
+
+          <!-- YOUR NARRATION SPACE -->
+          <div class="story" id="pageStory"></div>
+
+          <div class="kbdhint">
+            Navigate: <kbd>←</kbd> <kbd>→</kbd> or swipe on mobile
+          </div>
+        </div>
+      </div>
+
+      <div class="nav">
+        <div class="progress">
+          <button class="ghost" id="prevBtn">← Prev</button>
+          <div class="bar" aria-label="progress bar"><div id="barFill"></div></div>
+          <button id="nextBtn">Next →</button>
+        </div>
+
+        <div class="dots" id="dots"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ Put your images in assets/story/
+    // Rename filenames to match your real images.
+    const pages = [
+      {
+        title: "Ninis was born",
+        
+        stamp: "🦖🏥 softest day ever",
+        img: "assets/story/01-hospital.png",
+        storyHTML: `
+          <p><b>27 Feb 2003</b> — the day our star appeared ✨</p>
+          <p>In a tiny dino hospital, a very amazing girl was born.</p>
+          <p><i>Maybe the world didn’t realise it yet, but that day something special began.
+A girl who would grow up to be kind, strong, and quietly amazing entered the world.
+
+Her name is Anis.
+
+And little did everyone know, she would become someone very important in many people’s lives..including mine.</i></p>
+        `
+      },
+      {
+        title: "An Unexpected Friendship",
+        
+        stamp: "🎒 brightest day",
+        img: "assets/story/02-school.png",
+        storyHTML: `
+          <p>In Form 2, something unexpected happened.
+
+Anis, Ain, and Aina ended up in the same class, and slowly they became friends.
+Day by day their friendship grew stronger. Without even realising it, the three of them became almost impossible to separate.
+
+Anis often spent time at Aina’s house. In class, they sat next to each other, studied together after school, and worked hard to do well in their exams.
+Some days they even stayed back after school just to revise their lessons together.
+
+Through everything, Anis was always there — especially during moments when it felt like everyone else had turned their backs on one of them.
+
+This story holds a quiet thank you to Anis for always being kind and sincere in their friendship.
+And sometimes, there is a thought that appears softly…
+
+If there were another universe, hopefully the three of them would still meet again and become best friends.</p>
+        
+        `
+      },
+      {
+        title: "Ais Kepal Milo After School Jom!",
+        
+        stamp: "👯 besties since 2017",
+        img: "assets/story/03-aiskepalmilo.png",
+        storyHTML: `
+          <p>Some of the best memories are actually the simplest ones.
+
+After school, Anis, Ain, and Aina would walk home together.
+But before reaching home, there was always one important stop.
+
+The ais kepal milo stall.
+
+The three of them would be there, enjoying their cups of milo shaved ice while laughing and talking about random things, as if time moved a little slower in those moments.
+
+Those afternoons became some of the sweetest memories of their friendship.
+
+Even now, remembering those small moments still feels warm and nostalgic.</p>
+        `
+      },
+      {
+        title: "SPM was a rollercoaster, but she aced it!",
+        
+        stamp: "🏆 brainy dino",
+        img: "assets/story/04-spm.png",
+        storyHTML: `
+          <p>Then came SPM, and at the same time, Covid changed everything.
+
+It was a difficult time. Studying became harder, and everything around them felt uncertain.
+
+But despite the challenges, Anis continued to stay strong and focused.
+
+In the end, all of that effort paid off when she achieved straight A’s.
+
+It was a moment that made many people proud of her — especially those who had watched her work hard through the difficult days.</p>
+          
+        `
+      },
+      {
+        title: "Degree Era: Keep going, Ninis!",
+        
+        stamp: "📚 accounting grind",
+        img: "assets/story/07-degree-study.png",
+        storyHTML: `
+          <p>After high school, Anis continued moving forward in her journey.
+
+She graduated with a Diploma in Accounting from UiTM, and now she is pursuing her degree in Accounting at UPM Serdang.
+
+Life has not always been gentle to her lately, but there is something important that should always be remembered.
+
+Anis is loved by many people, her loved ones are always here for her, and there are many people who are praying for her well-being and success.
+
+Hopefully, every dua she makes will be answered one day, because she truly deserves good things in life.
+
+All the hard work she is putting into her degree now will surely lead her closer to the future she dreams of.</p>
+        `
+      },
+      {
+        title: "A year older, a year wiser",
+        stamp: "🌸 prayers always",
+        img: "assets/story/08-flowerfield.png",
+        storyHTML: `
+          <p>Happy 23rd birthday, Ninis. 🎂
+
+Thank you for existing and for being part of so many meaningful memories.
+
+Even on days when it feels like nothing special has been done, or when life feels overwhelming, one thing will always remain true.
+
+Just by being herself, Anis already means something important to the people who care about her.
+
+And one day, the right people will see that too.
+
+So please do not be too hard on yourself.
+
+The world may be harsh sometimes, but Anis truly deserves happiness, peace, and a future filled with beautiful things.</p>
+        `
+      }
+    ];
+
+    const pagePill = document.getElementById("pagePill");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageMeta  = document.getElementById("pageMeta");
+    const pageTag   = document.getElementById("pageTag");
+    const pagePrompt= document.getElementById("pagePrompt");
+    const pageStory = document.getElementById("pageStory");
+    const pageImg   = document.getElementById("pageImg");
+    const imgStamp  = document.getElementById("imgStamp");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const dotsWrap = document.getElementById("dots");
+    const barFill = document.getElementById("barFill");
+    const pageWrap = document.getElementById("pageWrap");
+    const book = document.getElementById("book");
+
+    let idx = 0;
+
+    function renderDots(){
+      dotsWrap.innerHTML = "";
+      pages.forEach((_, i) => {
+        const d = document.createElement("div");
+        d.className = "dot" + (i === idx ? " active" : "");
+        d.title = `Go to page ${i+1}`;
+        d.addEventListener("click", () => { idx = i; render(); });
+        dotsWrap.appendChild(d);
+      });
+    }
+
+    function render(){
+      const p = pages[idx];
+
+      pageTitle.textContent = p.title;
+      pageMeta.textContent  = p.meta;
+      pageTag.textContent   = p.tag;
+      if (p.prompt) {
+  pagePrompt.textContent = "Narration idea: " + p.prompt;
+  pagePrompt.style.display = "block";
+} else {
+  pagePrompt.style.display = "none";
+}
+      pageStory.innerHTML   = p.storyHTML;
+
+      pageImg.src = p.img;
+      imgStamp.textContent = p.stamp;
+
+      pagePill.textContent = `Page ${idx+1} / ${pages.length}`;
+
+      prevBtn.disabled = idx === 0;
+      nextBtn.disabled = idx === pages.length - 1;
+
+      const progress = ((idx + 1) / pages.length) * 100;
+      barFill.style.width = progress + "%";
+
+      renderDots();
+
+      // tiny flip feel
+      pageWrap.classList.remove("flip");
+      void pageWrap.offsetWidth;
+      pageWrap.classList.add("flip");
+    }
+
+    prevBtn.addEventListener("click", () => { if (idx > 0) { idx--; render(); } });
+    nextBtn.addEventListener("click", () => { if (idx < pages.length - 1) { idx++; render(); } });
+
+    // keyboard nav
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") prevBtn.click();
+      if (e.key === "ArrowRight") nextBtn.click();
+    });
+
+    // swipe nav (mobile)
+    let startX = 0;
+    book.addEventListener("touchstart", (e) => {
+      startX = e.changedTouches[0].clientX;
+    }, {passive:true});
+
+    book.addEventListener("touchend", (e) => {
+      const endX = e.changedTouches[0].clientX;
+      const dx = endX - startX;
+      if (Math.abs(dx) < 40) return;
+
+      if (dx > 0) prevBtn.click();   // swipe right => prev
+      else nextBtn.click();          // swipe left => next
+    }, {passive:true});
+
+    // init
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Wish 💌</title>
+
+  <style>
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:20px;
+      background:#fef3f6;
+      color:#111;
+    }
+
+    .wrap{ width:min(980px, 96vw); }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    h1{
+      margin:0;
+      font-size:20px;
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+
+    .btn-row{ display:flex; flex-wrap:wrap; gap:10px; }
+    button{
+      border:1px solid #de0d99;
+      background:#ffffff;
+      color:#d82f73;
+      padding:10px 14px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:14px;
+      white-space:nowrap;
+    }
+    button.ghost{
+      background:#fff;
+      color:#cd1276;
+      border-color:#ddd;
+    }
+
+    .card{
+      position:relative;
+      background: linear-gradient(180deg, #ffffff 0%, #fff7fb 100%);
+      border: 1px solid rgba(216,100,170,0.28);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+      overflow:hidden;
+    }
+
+    /* cute blobs */
+    .blob{
+      position:absolute;
+      width:260px;
+      height:260px;
+      border-radius:50%;
+      background: rgba(255, 182, 224, 0.35);
+      filter: blur(1px);
+      z-index:0;
+    }
+    .blob.a{ top:-140px; left:-140px; }
+    .blob.b{ bottom:-160px; right:-160px; background: rgba(216, 100, 170, 0.18); }
+
+    .content{ position:relative; z-index:1; }
+
+    /* ===== Envelope ===== */
+    .envelope-wrap{
+      display:grid;
+      place-items:center;
+      padding: 10px 0 4px;
+    }
+
+    .envelope{
+      width: min(560px, 92vw);
+      height: 320px;
+      position:relative;
+      border-radius:18px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .18s ease;
+    }
+    .envelope:active{ transform: scale(0.99); }
+
+    /* envelope body */
+    .env-body{
+      position:absolute;
+      inset:0;
+      background: #ffe1ef;
+      border: 1px solid rgba(216,100,170,0.35);
+      border-radius:18px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.10);
+      overflow:hidden;
+    }
+
+    /* envelope “paper” preview */
+    .env-paper{
+      position:absolute;
+      left: 18px;
+      right: 18px;
+      top: 18px;
+      bottom: 28px;
+      background: #fff;
+      border-radius:14px;
+      border: 1px solid rgba(0,0,0,0.07);
+      box-shadow: inset 0 0 0 1px rgba(216,100,170,0.10);
+      display:grid;
+      place-items:center;
+      padding: 16px;
+      text-align:center;
+      color:#7a1453;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+
+    .env-paper small{
+      display:block;
+      margin-top:8px;
+      color:#666;
+      font-weight:600;
+      letter-spacing:0;
+    }
+
+    /* envelope flap */
+    .env-flap{
+      position:absolute;
+      left:-1px;
+      right:-1px;
+      top:-1px;
+      height: 56%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,225,239,0.8) 65%, rgba(255,225,239,1) 100%);
+      border: 1px solid rgba(216,100,170,0.35);
+      border-bottom:none;
+      border-radius:18px 18px 0 0;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform .55s ease;
+      clip-path: polygon(0 0, 100% 0, 100% 70%, 50% 100%, 0 70%);
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      color:#c21081;
+      letter-spacing:.3px;
+    }
+
+    .seal{
+      position:absolute;
+      left:50%;
+      top: 54%;
+      transform: translate(-50%, -50%);
+      width: 64px;
+      height: 64px;
+      border-radius: 999px;
+      background: #c21081;
+      border: 2px solid rgba(255,255,255,0.85);
+      box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:26px;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+
+    .open-hint{
+      margin-top:10px;
+      text-align:center;
+      font-size:13px;
+      color:#555;
+    }
+
+    /* Open state */
+    .opened .env-flap{ transform: rotateX(180deg); }
+    .opened .seal{
+      opacity:0;
+      transform: translate(-50%, -50%) scale(0.92);
+      pointer-events:none;
+    }
+
+    /* IMPORTANT: after opening, envelope should not block scrolling */
+    .envelope.opened{
+      pointer-events: none;
+    }
+
+    /* ===== Reveal panel ===== */
+    .reveal{
+      display:none;
+      margin-top: 16px;
+    }
+
+    .poster{
+  display:flex;
+  justify-content:center;
+}
+
+.poster img{
+  width: 65%;        /* makes it smaller */
+  max-width: 420px;  /* prevents it getting huge on desktop */
+  height:auto;
+  display:block;
+  border-radius:14px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+
+    .letter{
+      margin-top: 14px;
+      border: 1px solid rgba(216,100,170,0.25);
+      background: rgba(255, 239, 248, 0.65);
+      border-radius: 18px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+    }
+
+    .letter h2{
+      margin: 0 0 6px;
+      font-size: 18px;
+      letter-spacing:.2px;
+    }
+
+    .scrollbox{
+      background:#fff;
+      border:1px solid rgba(0,0,0,0.08);
+      border-radius: 16px;
+      padding: 14px;
+      line-height: 1.8;
+      max-height: 44vh; /* scroll area */
+      overflow:auto;
+
+      /* smoother scroll on iOS */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .scrollbox p{ margin:0 0 12px; }
+    .scrollbox p:last-child{ margin-bottom:0; }
+
+    .note{
+      margin:10px 0 0;
+      font-size:12px;
+      color:#666;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <h1>Birthday Wish <span aria-hidden="true">💌</span></h1>
+      <div class="btn-row">
+        <button class="ghost" onclick="window.location.href='./index.html'">Back to menu</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="blob a"></div>
+      <div class="blob b"></div>
+
+      <div class="content">
+        <!-- Envelope -->
+        <div class="envelope-wrap">
+          <div class="envelope" id="envelope" role="button" aria-label="Open letter" tabindex="0">
+            <div class="env-body"></div>
+            <div class="env-paper">
+              To: </b>Ninis</b> 🦖💗
+              <small>Tap to open your letter</small>
+            </div>
+            <div class="seal">💗</div>
+          </div>
+
+        <!-- Reveal -->
+        <div class="reveal" id="reveal">
+          <div class="poster">
+            <img src="assets/story/wishposter.jpeg" alt="Anis birthday poster" />
+          </div>
+
+          <div class="letter" id="letterBox">
+            <h2>Dear Ninis,</h2>
+
+            <div class="scrollbox">
+              <p>Happy 23rd birthday, Ninis. 🎂</p>
+
+              <p>
+Thank you for existing and for being part of so many meaningful memories in my life.
+I’m truly thankful that life allowed us to become friends. Somehow our paths crossed,
+and we grew into friends who always look out for each other.
+</p>
+
+<p>
+Even if life feels heavy sometimes, please remember that you are never alone.
+There will always be people who care about you deeply, and I will always be one of them.
+</p>
+
+<p>
+Even on days when it feels like nothing special has been done,
+or when you feel like you are not enough, one thing will always be true:
+just by being yourself, you already mean something important to the people who care about you.
+</p>
+
+<p>
+I may not always text or reach out all the time,
+but please know that my care and appreciation for you will always be there.
+And if one day you ever need someone to talk to, someone to listen,
+or someone to simply be there for you, I will always be here.
+</p>
+
+<p>
+And one day, the right people will see you properly too.
+Not because you became someone else, but because you stayed as you.
+</p>
+
+<p>
+So please don’t be too hard on yourself.
+The world may be harsh sometimes, but you deserve softness, peace,
+and a future filled with beautiful things.
+</p>
+
+<p>
+I pray that Allah will always protect you and grant you good health,
+both physically and mentally. May Allah ease your heart,
+strengthen your iman, and fill your days with peace and happiness.
+</p>
+
+<p>
+May Allah ease every difficulty in your studies,
+bless all the effort you put into your degree,
+and guide you towards the career and future that is best for you.
+</p>
+
+<p>
+May Allah grant you success in this world and the next,
+surround you with sincere people who love and appreciate you,
+and answer every dua that you whisper in your prayers.
+</p>
+
+              <p><b>Love Always,</b><br/>Aina Yahya</p>
+            </div>
+
+
+            <div class="btn-row" style="margin-top:12px;">
+              <button onclick="window.location.href='./index.html'">Back to menu</button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /card -->
+  </div><!-- /wrap -->
+
+  <script>
+    const envelope = document.getElementById("envelope");
+    const hintText = document.getElementById("hintText");
+    const letterBox = document.getElementById("letterBox");
+    const reveal = document.getElementById("reveal");
+
+    function openEnvelope(){
+      envelope.classList.add("opened");
+      reveal.style.display = "block";
+      hintText.textContent = "Opened ✅ scroll to read the letter";
+
+      setTimeout(() => {
+        letterBox.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 250);
+    }
+
+    envelope.addEventListener("click", openEnvelope);
+    envelope.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openEnvelope();
+      }
+    });
+  </script>
+</body>
+</html>

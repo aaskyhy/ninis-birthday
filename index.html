@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Allura&display=swap" rel="stylesheet">
+  <title>NEESAURS</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: #fef3f6;
+    }
+
+    .card {
+      width: min(980px, 96vw);
+      background: #ffeff8;
+      border: 1px solid #d864aa;
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+
+    h2 { margin: 6px 0 8px; }
+    .muted { margin: 0 0 10px; color: #666; }
+
+    /* cute background blobs */
+    .blob {
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(255, 182, 224, 0.35);
+      filter: blur(1px);
+      z-index: 0;
+    }
+    .blob.a { top: -120px; left: -120px; }
+    .blob.b { bottom: -140px; right: -140px; background: rgba(216, 100, 170, 0.18); }
+
+    .content { position: relative; z-index: 1; }
+
+    canvas {
+      width: 100%;
+      max-width: 900px;
+      border: 1px solid #c21081;
+      border-radius: 14px;
+      background: #fce4ef;
+      display: block;
+      margin-top: 10px;
+      touch-action: manipulation;
+    }
+
+    .hint {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+      color: #444;
+      font-size: 14px;
+    }
+
+    kbd {
+      border: 1px solid #ddd;
+      border-bottom-width: 2px;
+      padding: 2px 8px;
+      border-radius: 8px;
+      background: #fafafa;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    button {
+      border: 1px solid #111;
+      background: #ffeffb;
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .endless-btn{
+  background:#ffffff;     /* very light nude */
+  border:1px solid #e8cfc5;
+      color: #f04799;
+}
+
+.endless-btn:hover{
+  background:#ffe4f5;
+}
+
+    button.ghost {
+      background: #fff;
+      color: #f04799;
+      border-color: #ddd;
+    }
+
+    .hidden { display: none; }
+
+    /* ===== Cute Welcome UI ===== */
+    .gate {
+      border: 1px solid rgba(216,100,170,0.28);
+      border-radius: 18px;
+      background: linear-gradient(180deg, #fff 0%, #fff7fb 100%);
+      padding: 18px;
+      margin-top: 12px;
+    }
+
+    .welcome{
+      text-align:center;
+      padding: 6px 0 12px;
+    }
+
+    .hero-dino{
+      width:120px;
+      margin-bottom:8px;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.08));
+      animation: dino-bounce 2.2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes dino-bounce{
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    .welcome-title{
+  font-family: "Allura", cursive;
+  font-size:48px;
+  color:#440423;
+  margin: 6px 0 12px;
+  text-shadow: 0 3px 12px rgba(255, 159, 205, 0.5);
+  transform: rotate(-1deg);
+}
+
+    .anis-photo{
+      width: 200px;
+      height: 350px;
+      display:block;
+      margin: 10px auto 10px;
+    }
+
+    .welcome-sub{
+      color:#666;
+      font-size:14px;
+      margin: 0;
+    }
+
+    .btn-row.big{
+      justify-content:center;
+      margin-top: 16px;
+    }
+
+    .btn-row.big button{
+      font-size:15px;
+      padding:12px 18px;
+    }
+
+    .center{ text-align:center; }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+
+    <div class="content">
+
+      <!-- ====== CUTE WELCOME (NO DATE PICKER) ====== -->
+      <div class="gate" id="homeGate">
+        <div class="welcome">
+          <!-- Dino icon (bouncing) -->
+          <img src="assets/dino.png" class="hero-dino" alt="Dino" />
+
+          <div class="welcome-title">Welcome to Anis World</div>
+
+          <!-- Anis photo: put your image here -->
+          <!-- Example path: assets/anis.jpg -->
+          <img src="assets/anis.png" class="anis-photo" alt="Anis photo" />
+
+          <p class="welcome-sub">
+            Happiest 23rd Birthday Ninis!<br/>
+          </p>
+        </div>
+
+        <div class="btn-row big">
+          <button class="ghost" id="goStoryBtn">Tale of Anis</button>
+          <button id="goEndlessBtn" class="endless-btn">🦖Neesaurs Run Game🦖</button>
+          <button class="ghost" id="goWishBtn">Birthday Wish</button>
+          
+        </div>
+
+      </div>
+
+      <!-- ====== GAME SECTION ====== -->
+      <div id="gameSection" class="hidden">
+        <p class="muted" id="modeText">
+          press <b>Space</b> to jump, avoid obstacles, and beat your <b>Best Score</b> ♾️
+        </p>
+
+        <canvas id="game" width="1500" height="600"></canvas>
+
+        <div class="hint">
+          <span><kbd>Space</kbd> Jump</span>
+          <span><kbd>R</kbd> Restart</span>
+          <button class="ghost" id="backHomeBtnTop">Back to menu</button>
+        </div>
+      </div>
+    </div><!-- /content -->
+  </div>
+
+  <script>
+    // Buttons
+    const homeGate = document.getElementById("homeGate");
+    const gameSection = document.getElementById("gameSection");
+
+    const goStoryBtn = document.getElementById("goStoryBtn");
+    const goWishBtn  = document.getElementById("goWishBtn");
+    const goEndlessBtn = document.getElementById("goEndlessBtn");
+
+    goStoryBtn.addEventListener("click", () => {
+      window.location.href = "./story.html";
+    });
+
+    goWishBtn.addEventListener("click", () => {
+      window.location.href = "./wish.html";
+    });
+
+    function goBackToMenu() {
+      gameSection.classList.add("hidden");
+      homeGate.classList.remove("hidden");
+    }
+
+    // ===== Endless game only =====
+    let gameStarted = false;
+    let controller = null;
+
+    function enterEndless() {
+      homeGate.classList.add("hidden");
+      gameSection.classList.remove("hidden");
+
+      if (!gameStarted) {
+        gameStarted = true;
+        controller = startGame();
+      } else {
+        controller.reset();
+      }
+    }
+
+    goEndlessBtn.addEventListener("click", enterEndless);
+
+    // ===== GAME =====
+    function startGame() {
+      const canvas = document.getElementById("game");
+      const ctx = canvas.getContext("2d");
+
+      const backHomeBtnTop = document.getElementById("backHomeBtnTop");
+
+      const GROUND_Y = 550;
+      const GRAVITY = 0.40;
+      const JUMP_VELOCITY = -13;
+
+      const DINO_W = 250;
+      const DINO_H = 250;
+
+      const CACTUS_W = 80;
+      const CACTUS_H = 70;
+
+      const imgDino = new Image();
+      imgDino.src = "assets/dino.png";
+
+      const imgCactus = new Image();
+      imgCactus.src = "assets/cactus.png";
+
+      let best = Number(localStorage.getItem("bestScore") || 0);
+
+      let running = true;
+      let gameOver = false;
+      let score = 0;
+      let speed = 6;
+
+      let obstacles = [];
+      let spawnTimer = 0;
+      let lastTime = 0;
+
+      const dino = {
+        x: 80,
+        y: GROUND_Y - DINO_H,
+        vy: 0,
+        onGround: true
+      };
+
+      function reset() {
+        running = true;
+        gameOver = false;
+        score = 0;
+        speed = 6;
+        obstacles = [];
+        spawnTimer = 0;
+
+        dino.y = GROUND_Y - DINO_H;
+        dino.vy = 0;
+        dino.onGround = true;
+      }
+
+      function jump() {
+        if (dino.onGround && !gameOver) {
+          dino.vy = JUMP_VELOCITY;
+          dino.onGround = false;
+        }
+      }
+
+      // Controls
+      window.addEventListener("keydown", (e) => {
+        if (e.code === "Space") {
+          e.preventDefault();
+          if (gameOver) reset();
+          else jump();
+        }
+        if (e.key.toLowerCase() === "r") reset();
+      });
+
+      canvas.addEventListener("pointerdown", () => {
+        if (gameOver) reset();
+        else jump();
+      });
+
+      backHomeBtnTop.addEventListener("click", () => {
+        reset();
+        goBackToMenu();
+      });
+
+      function spawnObstacle() {
+        obstacles.push({
+          x: canvas.width + 20,
+          y: GROUND_Y - CACTUS_H,
+          w: CACTUS_W,
+          h: CACTUS_H
+        });
+      }
+
+      function hit(a, b) {
+        return (
+          a.x < b.x + b.w &&
+          a.x + a.w > b.x &&
+          a.y < b.y + b.h &&
+          a.y + a.h > b.y
+        );
+      }
+
+      function update(dt) {
+        score += dt * 0.01;
+
+        // slower ramp so it stays fun
+        speed = 6 + Math.min(8, score / 35);
+
+        dino.vy += GRAVITY;
+        dino.y += dino.vy;
+
+        if (dino.y >= GROUND_Y - DINO_H) {
+          dino.y = GROUND_Y - DINO_H;
+          dino.vy = 0;
+          dino.onGround = true;
+        }
+
+        spawnTimer += dt;
+
+        const minGap = 1900;
+        const maxGap = 2700;
+        const spawnEvery = Math.random() * (maxGap - minGap) + minGap;
+
+        if (spawnTimer > spawnEvery) {
+          spawnObstacle();
+          spawnTimer = 0;
+        }
+
+        obstacles.forEach(o => o.x -= speed);
+        obstacles = obstacles.filter(o => o.x + o.w > -50);
+
+        const DINO_PAD_X = 18, DINO_PAD_Y = 14;
+        const CACTUS_PAD_X = 8, CACTUS_PAD_Y = 8;
+
+        const dinoBox = {
+          x: dino.x + DINO_PAD_X,
+          y: dino.y + DINO_PAD_Y,
+          w: DINO_W - DINO_PAD_X * 2,
+          h: DINO_H - DINO_PAD_Y * 2,
+        };
+
+        for (const o of obstacles) {
+          const cactusBox = {
+            x: o.x + CACTUS_PAD_X,
+            y: o.y + CACTUS_PAD_Y,
+            w: o.w - CACTUS_PAD_X * 2,
+            h: o.h - CACTUS_PAD_Y * 2,
+          };
+
+          if (hit(dinoBox, cactusBox)) {
+            gameOver = true;
+            running = false;
+            break;
+          }
+        }
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.moveTo(0, GROUND_Y + 1);
+        ctx.lineTo(canvas.width, GROUND_Y + 1);
+        ctx.stroke();
+
+        const currentScore = Math.floor(score);
+        if (currentScore > best) {
+          best = currentScore;
+          localStorage.setItem("bestScore", best);
+        }
+
+        ctx.font = "16px Arial";
+        ctx.fillText(`Score: ${currentScore} (Endless)`, 14, 22);
+        ctx.fillText(`Best: ${best}`, 14, 44);
+
+        if (imgDino.complete) ctx.drawImage(imgDino, dino.x, dino.y, DINO_W, DINO_H);
+        else ctx.fillRect(dino.x, dino.y, DINO_W, DINO_H);
+
+        obstacles.forEach(o => {
+          if (imgCactus.complete) ctx.drawImage(imgCactus, o.x, o.y, o.w, o.h);
+          else ctx.fillRect(o.x, o.y, o.w, o.h);
+        });
+
+        if (gameOver) {
+          ctx.fillText("Game Over 💀", canvas.width / 2 - 50, 90);
+          ctx.fillText("Press Space / Tap to restart", canvas.width / 2 - 110, 120);
+        }
+      }
+
+      function loop(ts) {
+        const dt = ts - lastTime;
+        lastTime = ts;
+
+        if (running && !gameOver) update(dt);
+        draw();
+
+        requestAnimationFrame(loop);
+      }
+
+      requestAnimationFrame(loop);
+
+      return { reset };
+    }
+  </script>
+</body>
+</html>
