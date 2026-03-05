@@ -91,7 +91,7 @@
       overflow:hidden;
     }
 
-    /* Cute blobs */
+    
     .blob{
       position:absolute;
       width:260px;
@@ -117,7 +117,7 @@
       .content{ grid-template-columns: 1fr; }
     }
 
-    /* Left page (image) */
+    /* Left page (story) */
     .page-left{
   display:flex;
   align-items:center;
@@ -125,7 +125,7 @@
 }
 
 .page-left img{
-  width:85%;       /* image smaller */
+  width:85%;       
   height:auto;
   max-height:85%;
   object-fit:contain;
@@ -147,7 +147,7 @@
       max-width: calc(100% - 24px);
     }
 
-    /* Right page (story) */
+    /* Right page (my narative) */
     .page-right{
       border-radius:16px;
       border:1px solid rgba(0,0,0,0.08);
@@ -301,7 +301,7 @@
       </div>
 
       <div class="btn-row">
-        <!-- Change these filenames if yours are different -->
+        
         <button onclick="window.location.href='index.html#game'">Back to menu</button>
       </div>
     </div>
@@ -329,7 +329,7 @@
 
           <p class="prompt" id="pagePrompt">Narration idea: keep it short + sweet + funny.</p>
 
-          <!-- YOUR NARRATION SPACE -->
+          <!-- naration parttt -->
           <div class="story" id="pageStory"></div>
 
           <div class="kbdhint">
@@ -351,8 +351,8 @@
   </div>
 
   <script>
-    // ✅ Put your images in assets/story/
-    // Rename filenames to match your real images.
+    
+    
     const pages = [
       {
         title: "Ninis was born",
@@ -543,7 +543,7 @@ The world may be harsh sometimes, but Anis truly deserves happiness, peace, and 
       if (e.key === "ArrowRight") nextBtn.click();
     });
 
-    // swipe nav (mobile)
+    // swipe nav (untuk mobile or ipad)
     let startX = 0;
     book.addEventListener("touchstart", (e) => {
       startX = e.changedTouches[0].clientX;
@@ -562,4 +562,5 @@ The world may be harsh sometimes, but Anis truly deserves happiness, peace, and 
     render();
   </script>
 </body>
+
 </html>
