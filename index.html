@@ -33,7 +33,7 @@
     h2 { margin: 6px 0 8px; }
     .muted { margin: 0 0 10px; color: #666; }
 
-    /* background polka */
+    
     .blob {
       position: absolute;
       width: 260px;
@@ -186,7 +186,7 @@
       
       <div class="gate" id="homeGate">
         <div class="welcome">
-          <!-- Dino icon (bouncing) -->
+          <!-- Dino bouncing part -->
           <img src="assets/dino.png" class="hero-dino" alt="Dino" />
 
           <div class="welcome-title">Welcome to Anis World</div>
@@ -208,7 +208,7 @@
 
       </div>
 
-      <!-- GAME SECTION -->
+      <!-- GAME -->
       <div id="gameSection" class="hidden">
         <p class="muted" id="modeText">
           press <b>Space</b> to jump, avoid obstacles, and beat your <b>Best Score</b> ♾️
@@ -222,7 +222,7 @@
           <button class="ghost" id="backHomeBtnTop">Back to menu</button>
         </div>
       </div>
-    </div><!-- /content -->
+    </div>
   </div>
 
   <script>
@@ -247,7 +247,7 @@
       homeGate.classList.remove("hidden");
     }
 
-    // ===== game logic tapi endless =====
+    // ===== endless part =====
     let gameStarted = false;
     let controller = null;
 
@@ -469,3 +469,4 @@
 </body>
 
 </html>
+
