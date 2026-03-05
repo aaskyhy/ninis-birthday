@@ -63,7 +63,7 @@
       overflow:hidden;
     }
 
-    /* cute blobs */
+    
     .blob{
       position:absolute;
       width:260px;
@@ -78,7 +78,7 @@
 
     .content{ position:relative; z-index:1; }
 
-    /* ===== Envelope ===== */
+    
     .envelope-wrap{
       display:grid;
       place-items:center;
@@ -97,7 +97,7 @@
     }
     .envelope:active{ transform: scale(0.99); }
 
-    /* envelope body */
+    
     .env-body{
       position:absolute;
       inset:0;
@@ -108,7 +108,7 @@
       overflow:hidden;
     }
 
-    /* envelope “paper” preview */
+    
     .env-paper{
       position:absolute;
       left: 18px;
@@ -136,7 +136,7 @@
       letter-spacing:0;
     }
 
-    /* envelope flap */
+    
     .env-flap{
       position:absolute;
       left:-1px;
@@ -191,12 +191,12 @@
       pointer-events:none;
     }
 
-    /* IMPORTANT: after opening, envelope should not block scrolling */
+    
     .envelope.opened{
       pointer-events: none;
     }
 
-    /* ===== Reveal panel ===== */
+    
     .reveal{
       display:none;
       margin-top: 16px;
@@ -208,8 +208,8 @@
 }
 
 .poster img{
-  width: 65%;        /* makes it smaller */
-  max-width: 420px;  /* prevents it getting huge on desktop */
+  width: 65%;        
+  max-width: 420px;  
   height:auto;
   display:block;
   border-radius:14px;
@@ -240,7 +240,7 @@
       max-height: 44vh; /* scroll area */
       overflow:auto;
 
-      /* smoother scroll on iOS */
+      /* for smoother scroll on iOS xixixi */
       -webkit-overflow-scrolling: touch;
     }
 
@@ -355,9 +355,9 @@ and answer every dua that you whisper in your prayers.
           </div>
         </div>
 
-      </div><!-- /content -->
-    </div><!-- /card -->
-  </div><!-- /wrap -->
+      </div>
+    </div>
+  </div>
 
   <script>
     const envelope = document.getElementById("envelope");
@@ -384,4 +384,5 @@ and answer every dua that you whisper in your prayers.
     });
   </script>
 </body>
+
 </html>
