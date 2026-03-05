@@ -33,7 +33,7 @@
     h2 { margin: 6px 0 8px; }
     .muted { margin: 0 0 10px; color: #666; }
 
-    /* cute background blobs */
+    /* background polka */
     .blob {
       position: absolute;
       width: 260px;
@@ -96,7 +96,7 @@
     }
 
     .endless-btn{
-  background:#ffffff;     /* very light nude */
+  background:#ffffff;     
   border:1px solid #e8cfc5;
       color: #f04799;
 }
@@ -113,7 +113,7 @@
 
     .hidden { display: none; }
 
-    /* ===== Cute Welcome UI ===== */
+    
     .gate {
       border: 1px solid rgba(216,100,170,0.28);
       border-radius: 18px;
@@ -183,7 +183,7 @@
 
     <div class="content">
 
-      <!-- ====== CUTE WELCOME (NO DATE PICKER) ====== -->
+      
       <div class="gate" id="homeGate">
         <div class="welcome">
           <!-- Dino icon (bouncing) -->
@@ -191,8 +191,7 @@
 
           <div class="welcome-title">Welcome to Anis World</div>
 
-          <!-- Anis photo: put your image here -->
-          <!-- Example path: assets/anis.jpg -->
+          
           <img src="assets/anis.png" class="anis-photo" alt="Anis photo" />
 
           <p class="welcome-sub">
@@ -209,7 +208,7 @@
 
       </div>
 
-      <!-- ====== GAME SECTION ====== -->
+      <!-- GAME SECTION -->
       <div id="gameSection" class="hidden">
         <p class="muted" id="modeText">
           press <b>Space</b> to jump, avoid obstacles, and beat your <b>Best Score</b> ♾️
@@ -227,7 +226,7 @@
   </div>
 
   <script>
-    // Buttons
+    // Button
     const homeGate = document.getElementById("homeGate");
     const gameSection = document.getElementById("gameSection");
 
@@ -248,7 +247,7 @@
       homeGate.classList.remove("hidden");
     }
 
-    // ===== Endless game only =====
+    // ===== game logic tapi endless =====
     let gameStarted = false;
     let controller = null;
 
@@ -327,7 +326,7 @@
         }
       }
 
-      // Controls
+      // keboard Control
       window.addEventListener("keydown", (e) => {
         if (e.code === "Space") {
           e.preventDefault();
@@ -368,7 +367,7 @@
       function update(dt) {
         score += dt * 0.01;
 
-        // slower ramp so it stays fun
+        // slower ramp, boleh laju kan if nak susah
         speed = 6 + Math.min(8, score / 35);
 
         dino.vy += GRAVITY;
@@ -468,4 +467,5 @@
     }
   </script>
 </body>
+
 </html>
